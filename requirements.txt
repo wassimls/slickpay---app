@@ -1,1 +1,6 @@
-Collecting gunicorn
+flask
+python-dotenv
+slick-pay
+supabase
+flask-cors
+gunicorn
