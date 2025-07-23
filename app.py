@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS  # استيراد مكتبة CORS
 from dotenv import load_dotenv
 import os
 from slickpay import (
@@ -10,14 +11,18 @@ from slickpay import (
     InvoiceTransfer,
 )
 
-# تحميل متغيرات البيئة من ملف .env
+# تحميل متغيرات البيئة (يعمل فقط في البيئة المحلية)
 load_dotenv()
 
+# تهيئة تطبيق Flask
 app = Flask(__name__)
 
-# إعدادات SleekPay
+# تفعيل CORS للسماح بالطلبات من أي مصدر (يمكنك تخصيصه لاحقًا لنطاق موقعك فقط)
+CORS(app)
+
+# إعدادات SleekPay من متغيرات البيئة
 public_key = os.getenv("public_key")
-sandbox = os.getenv("sandbox").lower() == "true"
+sandbox = os.getenv("sandbox", "True").lower() == "true"
 
 # تهيئة كائنات SleekPay
 invoiceMerchant = InvoiceTransferMerchant()
@@ -27,10 +32,13 @@ userTransfer = Transfer()
 userPaymentAggregation = PaymentAggregation()
 userInvoiceTransfer = InvoiceTransfer()
 
+@app.route("/")
+def home():
+    return "SleekPay Backend is running!"
+
 # -------------------
 # Merchant Account
 # -------------------
-
 @app.route("/merchant/invoices", methods=["POST"])
 def create_merchant_invoice():
     data = request.get_json()
@@ -49,12 +57,11 @@ def list_merchant_invoices():
     res = invoiceMerchant.listInvoice(offset, page)
     return jsonify(res)
 
-# ... (أكمل باقي الدوال بنفس الطريقة)
+# ... أكمل باقي الدوال بنفس الطريقة التي كانت عليها ...
 
 # -------------------
 # User Account
 # -------------------
-
 @app.route("/users/accounts", methods=["POST"])
 def create_user_account():
     data = request.get_json()
@@ -66,8 +73,7 @@ def get_user_account_details(id):
     res = userAccount.accountDetails(id)
     return jsonify(res)
 
-# ... (أكمل باقي الدوال بنفس الطريقة)
+# ... أكمل باقي دوال المستخدم بنفس الطريقة ...
 
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# لا نحتاج إلى app.run() هنا، لأن Gunicorn سيتولى التشغيل

@@ -1,6 +1,6 @@
-flask
+Flask
 python-dotenv
-slick-pay
-supabase
-flask-cors
+slick-pay==0.3
+requests
 gunicorn
+Flask-Cors
