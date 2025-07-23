@@ -1,4 +1,1 @@
-Flask
-python-dotenv
-slick-pay==0.3
-requests
+Collecting gunicorn
